@@ -1,15 +1,18 @@
 #include "Tenma7213210Load.h"
 
-Tenma7213210Load::Tenma7213210Load() : loadHardware("tenma7213210") {
+Tenma7213210Load::Tenma7213210Load() : loadHardware("tenma7213210", "Tenma 72-13210") {
   commPort="";
   ioStream=nullptr;
 }
 
+Tenma7213210Load::~Tenma7213210Load(){
+}
+    
 void Tenma7213210Load::processSettings(QDomElement element){
   if (element.tagName().toLower()=="port") commPort=element.text();
 }
 
-bool Tenma7213210Load::initialise(){
+bool Tenma7213210Load::initialise(int channel){
   if (commPort.isEmpty()){
     printf("Serial port not specified. Cannot open port.\n");
     return false;

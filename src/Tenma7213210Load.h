@@ -17,8 +17,8 @@ class Tenma7213210Load : public loadHardware
 {
   public:
     Tenma7213210Load();
-
-    bool initialise();
+    ~Tenma7213210Load();
+    bool initialise(int channel);
     bool shutdown();
     void setCurrent(double preset);
     void enable(bool enable);

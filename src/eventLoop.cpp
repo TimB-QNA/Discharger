@@ -27,8 +27,13 @@ eventLoop::eventLoop(QObject *parent) : QObject(parent){
   connect(plotTimer, SIGNAL(timeout()), this, SLOT(runGnuplot()));
 
   currentPack=0;
+  m_activeChannel=0;
   dischargeTimeSecs=0;
   startTime=QDateTime::currentDateTime();
+}
+
+void eventLoop::setActiveChannel(int chan){
+  m_activeChannel=chan;
 }
 
 bool eventLoop::loadSetup(){
@@ -81,7 +86,7 @@ bool eventLoop::openPort(){
     return false;
   }
 
-  return m_progLoad->initialise();
+  return m_progLoad->initialise(m_activeChannel);
 }
 
 bool eventLoop::applySettings(QString packID){
@@ -112,6 +117,15 @@ void eventLoop::listPackIDs(){
   
   for (i=0;i<packs.count();i++){
     printf("  %s\n", packs[i].id.toLatin1().data());
+  }
+}
+
+void eventLoop::listHardware(){
+  QStringList hw=loadHardware::typesAvailable();
+  int i;
+  
+  for (i=0;i<hw.count();i++){
+    printf("  %s\n", hw[i].toLatin1().data());
   }
 }
 
@@ -161,7 +175,7 @@ void eventLoop::operate(){
     fclose(logFile);
     runGnuplot();
     produceQALabel();
-    m_progLoad->shutdown();
+    closeHardware();
     exit(0);
   }
 }

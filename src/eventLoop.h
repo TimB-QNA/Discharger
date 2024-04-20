@@ -23,9 +23,11 @@ class eventLoop : public QObject
     bool openLog();
     bool applySettings(QString packID);
     void listPackIDs();
+    void listHardware();
     void startDischarge();
     void closeHardware();
-
+    void setActiveChannel(int chan);
+    
   private slots:
     void operate();
     void stdOutValues();
@@ -44,6 +46,7 @@ class eventLoop : public QObject
     double voltage, current, power, endVoltage;
     double lastPower, energy, dischargeTimeSecs;
     int currentPack;
+    int m_activeChannel;
     
   public:  
     void produceQALabel();

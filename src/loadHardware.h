@@ -17,15 +17,21 @@ class loadHardware
 // Factory
   public:
     static loadHardware* factory(QDomElement element);
+    static QStringList   typesAvailable();
+    
   private:
     static bool          factorySetup(QDomElement element, loadHardware *temp);
 
 // Class
   public:
-    loadHardware(QString xmlType);
+    loadHardware(QString xmlType, QString hwName);
+    virtual ~loadHardware();
+    QString name();
+    QString xmlType();
+        
     void readSettings(QDomElement element);
 
-    virtual bool initialise();
+    virtual bool initialise(int channel);
     virtual bool shutdown();
     virtual void setCurrent(double preset);
     virtual void enable(bool enable);
@@ -38,7 +44,7 @@ class loadHardware
     virtual void processSettings(QDomElement element);
 
   private:
-    QString m_hardwareTag;
+    QString m_hardwareTag, m_hwname;
     bool isOfType(QString xmlType);
 
 };
