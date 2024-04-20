@@ -1,0 +1,14 @@
+<batteries>
+  <hardware type="tenma7213210">
+    <port>/dev/serial/by-id/pci-0416_SZ_KORAD_USB_Mode_COM201708150-if00</port>
+  </hardware>
+  <pack>
+    <id>Pk1</id>
+    <capacity>1500</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>3</cells>
+    <endVoltage>3.4</endVoltage>
+    <current>3000</current>
+    <new>01/06/16</new>
+  </pack>
+</batteries>

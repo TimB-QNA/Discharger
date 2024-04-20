@@ -1,0 +1,50 @@
+#!/usr/bin/gnuplot
+
+# Example Command line...
+# gnuplot -c batteryLog.gplt Pk3 LiPo 3 3.4 3.7 1500 logs/Pk3-05102018-182434
+ 
+pack=ARG1    #  "Pk3"
+chem=ARG2    #  "LiPo"
+nCell=ARG3+0   #  3
+vCutoff=ARG4+0 #  3.4
+vNom=ARG5+0    #  3.7
+cap=ARG6+0     #  1500
+
+fileStem=ARG7 # e.g. logs/Pk3-05102018-182434
+
+ratedEnergy=nCell*(vNom*cap/1000*3600)/1000
+
+set print '-'
+
+stats fileStem.".log" using 2:6 nooutput
+
+duration=STATS_max_x/60
+energy=STATS_max_y/1000
+
+stats fileStem.".log" using 4 nooutput
+
+dRate=STATS_mean
+
+set terminal postscript landscape colour font "FreeMono, 9"
+set output fileStem.".ps"
+
+set grid
+set title  "Battery Discharge Test\n{/*0.75 ".fileStem.".log}"
+set xlabel "Time (min)"
+set ylabel "Voltage (V)"
+
+labelData=          "  Battery Pack: ".pack."\n"
+labelData=labelData."     Chemistry: ".chem."\n"
+labelData=labelData."         Cells: ".nCell."\n"
+labelData=labelData."      Capacity: ".sprintf("%.0f", cap)." mAh\n"
+labelData=labelData."Cutoff Voltage: ".sprintf("%.1f", vCutoff)." V/cell\n"
+labelData=labelData."  Rated Energy: ".sprintf("%.2f", ratedEnergy)." kJ\n"
+labelData=labelData."      Duration: ".sprintf("%.0f", duration)." min\n"
+labelData=labelData."Discharge Rate: ".sprintf("%.2f", dRate)." A\n
+labelData=labelData."        Energy: ".sprintf("%.2f", energy)." kJ\n
+labelData=labelData." Real Capacity: ".sprintf("%.1f",energy/ratedEnergy*100)." %"
+
+set obj rect at graph 0.155,.155 size graph .25,.24
+set label  1 at graph 0.05,.25 labelData left
+
+plot fileStem.".log" using ($2/60):3 with lines notitle
