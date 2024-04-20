@@ -57,3 +57,5 @@ compile_commands.json
 bin*
 .Linux-x86_64*
 
+# Doxygen/Latex files
+doc/codeDoc/doxygen/*
