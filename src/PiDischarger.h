@@ -61,7 +61,7 @@ class PiDischarger : public loadHardware
     void processSettings(QDomElement element);
 
   private:
-    piDischargerChannel m_disChan[8];
+    piDischargerChannel m_disChan[9];
     piDischargerChannel *m_activeChannel;
     
     int m_adcBits;     ///< User selectable bit-width for ADC.

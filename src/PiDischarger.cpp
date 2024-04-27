@@ -21,7 +21,12 @@ void piDischargerChannel::registerHardware(ADCPi *adc, IoPi *digIo){
     
  if (m_dioChannel<1 || m_dioChannel>16) return;
  
- m_digIoPort->set_pin_direction(m_dioChannel, 0); // Set configured pin as output.
+ try{
+   m_digIoPort->set_pin_direction(m_dioChannel, 0); // Set configured pin as output.
+ } catch (exception &e){
+   printf("Exception setting digital IO direction: %s\n", e.what());
+ }
+
  enable(false);    
 }
     
@@ -47,14 +52,23 @@ void piDischargerChannel::enable(bool en){
   if (m_dioChannel<1 || m_dioChannel>16) return;
   
   if (en) val=1;
-  m_digIoPort->write_pin(m_dioChannel, val);
+  try {
+    m_digIoPort->write_pin(m_dioChannel, val);
+  } catch (exception &e){
+    printf("Exception setting digital IO pin state: %s\n", e.what());
+  }
 }
 
 bool piDischargerChannel::voltage(double *volts){
   if (m_adc==nullptr) return false;
   if (m_adcChannel<1 || m_adcChannel>8) return false;
   
-  m_lastVolts=m_adc->read_voltage(m_adcChannel) * m_slope + m_offset;
+  try {
+    m_lastVolts=m_adc->read_voltage(m_adcChannel) * m_slope + m_offset;
+  } catch (exception &e){
+    printf("Exception reading ADC Channel: %s\n", e.what());
+    return false;
+  }
   *volts=m_lastVolts;
   return true;
 }
@@ -85,10 +99,14 @@ void PiDischarger::processSettings(QDomElement element){
 
 bool PiDischarger::initialise(int channel){
   int i;
-  
-  m_adc = new ADCPi(0x68, 0x69); //, m_adcBits);
-  m_adc->set_pga(1);
-  m_adc->set_conversion_mode(0);
+
+  try{
+    m_adc = new ADCPi(0x68, 0x69); //, m_adcBits);
+    m_adc->set_pga(1);
+    m_adc->set_conversion_mode(0);
+  } catch (exception &e){
+    printf("Exception configuring ADC: %s\n", e.what());
+  }
 
   try{
     m_digIoPort = new IoPi(0x20);
@@ -96,7 +114,7 @@ bool PiDischarger::initialise(int channel){
     printf("Exception configuring digital IO: %s\n", e.what());
   }
 
-  for (i=0;i<8;i++){
+  for (i=0;i<9;i++){
     m_disChan[i].registerHardware(m_adc, m_digIoPort);
   }
   
