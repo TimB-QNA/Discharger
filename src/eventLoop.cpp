@@ -137,6 +137,7 @@ bool eventLoop::openLog(){
 
 void eventLoop::startDischarge(){
   energy=0;
+  dischargeTimeSecs=0;
 
   startTime=QDateTime::currentDateTime();
   readPhysical();
@@ -144,7 +145,9 @@ void eventLoop::startDischarge(){
   readPhysical();
 
   lastPower=power;
+
   stdOutValues();
+  writeLogValues(startTime);
 
   opTimer->start();
   stdOutTimer->start();
@@ -158,18 +161,24 @@ void eventLoop::stdOutValues(){
   printf("%s   %6.3lf V   %6.3lf A   %7.3lf W   %0.3lf kJ\n", time.toLatin1().data(), voltage, current, power, energy/1000.);
 }
 
+void eventLoop::writeLogValues(QDateTime thisSample){
+  QString time=thisSample.toString("dd/MM/yyyy-hh:mm:ss.zzz");
+
+  fprintf(logFile, "%s %lf %lf %lf %lf %lf\n", time.toLatin1().data(), dischargeTimeSecs, voltage, current, power, energy);
+  fflush(logFile);
+}
+
 void eventLoop::operate(){
   readPhysical();
   QDateTime thisSample=QDateTime::currentDateTime();
   QString time=thisSample.toString("dd/MM/yyyy-hh:mm:ss.zzz");
   
-  dischargeTimeSecs = startTime.secsTo(thisSample);
+  dischargeTimeSecs = startTime.msecsTo(thisSample)/1000.;
   
   energy+=(power+lastPower)/2. * (double)opTimer->interval()/1000.;
   lastPower=power;
   
-  fprintf(logFile, "%s %lf %lf %lf %lf %lf\n", time.toLatin1().data(), (double)startTime.secsTo(thisSample), voltage, current, power, energy);
-  fflush(logFile);
+  writeLogValues(thisSample);
 
   if (voltage<endVoltage){
     m_progLoad->enable(false);

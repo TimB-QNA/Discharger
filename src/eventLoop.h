@@ -31,6 +31,7 @@ class eventLoop : public QObject
   private slots:
     void operate();
     void stdOutValues();
+    void writeLogValues(QDateTime thisSample);
     void runGnuplot();
     
     void readPhysical();
