@@ -2,6 +2,7 @@ TEMPLATE	= app
 LANGUAGE	= C++
 
 QT += serialport xml printsupport
+QT -= widgets
 
 CONFIG  += qt warn_on release
 

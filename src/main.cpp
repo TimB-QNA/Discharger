@@ -22,7 +22,7 @@ void sigInt_handler(sig_atomic_t s){
 int main(int argc, char * argv[]){
   int rVal, i;
   QString packId;
-  QGuiApplication app(argc,argv);
+  QCoreApplication app(argc,argv);
 
   signal (SIGINT,sigInt_handler);
 
