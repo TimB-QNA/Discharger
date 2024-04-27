@@ -130,6 +130,7 @@ void eventLoop::listHardware(){
 }
 
 bool eventLoop::openLog(){
+  system("mkdir -p logs");
   logFile=fopen((fileNameStem+QString(".log")).toLatin1().data(), "w");
   return true;
 }
