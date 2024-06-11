@@ -107,10 +107,10 @@ bool eventLoop::applySettings(QString packID){
 
   currentPack->printDetails(stdout);
   printf("\n");
-  printf("Setting discharge current to %lf A\n", packs[i].current/1000.);
+  printf("Setting discharge current to %lf A\n", currentPack->current/1000.);
   m_progLoad->setCurrent(currentPack->current/1000.);
       
-  endVoltage=currentPack->endVoltage()*packs[i].cells;
+  endVoltage=currentPack->endVoltage()*currentPack->cells;
   printf("Setting discharge end voltage to %lf V (%lf V/Cell)\n", endVoltage, currentPack->endVoltage());
 
   startTime=QDateTime::currentDateTime();
