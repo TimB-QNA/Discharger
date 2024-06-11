@@ -2,27 +2,32 @@
   #define batteryPack_H
 
 #include <QtXml>
+#include "batteryChemistry.h"
 
 class batteryPack
 {
 
   public:
-    batteryPack();
+    batteryPack(QList<batteryChemistry> *chem);
     void clear();
     void readXml(QDomElement xml);
-    QString chemistry();
+    batteryChemistry chemistry();
     bool isPack(QString packId);
     void printDetails(FILE *stream);
       
     QString id;
     double capacity; // mAh
     int cells;
-    double endVoltage; // Discharge End Voltage
+    double endVoltage();
+    double ratedEnergy();
     double current; // Discharge Current (mA)
-    double nominalVoltage; // Nominal Cell voltage (depends on cell chemistry)
     
   private:
-    int batt_chem=1; // 1 NiCad, 2 NiMh, 3 LiPo
+    bool   m_customEndVoltage;
+    double m_endVolts;
+
+    int activeChem; // list index.
+    QList<batteryChemistry> *m_chem;
 };
 
 #endif

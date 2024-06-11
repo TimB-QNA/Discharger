@@ -6,8 +6,8 @@
 #include <QSerialPort>
 #include <QTimer>
 #include "loadHardware.h"
+#include "batteryChemistry.h"
 #include "batteryPack.h"
-
 
 class eventLoop : public QObject
 {
@@ -43,10 +43,13 @@ class eventLoop : public QObject
     QSerialPort *ioStream;
     QTimer *opTimer, *stdOutTimer, *plotTimer;
     FILE *logFile;
+    QList<batteryChemistry> chem;
     QList<batteryPack> packs;
     double voltage, current, power, endVoltage;
     double lastPower, energy, dischargeTimeSecs;
-    int currentPack;
+
+    batteryPack *currentPack;
+
     int m_activeChannel;
     
   public:  

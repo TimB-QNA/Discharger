@@ -8,12 +8,14 @@ CONFIG  += qt warn_on release
 
 HEADERS += src/eventLoop.h \
            src/batteryPack.h \
+           src/batteryChemistry.h \
            src/loadHardware.h
            
 SOURCES += src/main.cpp \
            src/eventLoop.cpp \
            src/batteryPack.cpp \
-           src/loadHardware.cpp           
+           src/batteryChemistry.cpp \
+           src/loadHardware.cpp
 
 # Load hardware libraries           
 HEADERS += src/Tenma7213210Load.h

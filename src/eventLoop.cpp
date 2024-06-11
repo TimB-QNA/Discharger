@@ -45,7 +45,7 @@ bool eventLoop::loadSetup(){
   QDomNode root;
   QDomElement element;
 
-  batteryPack tmpPack;
+  batteryPack tmpPack(&chem);
   
   QFile file("setup.xml");
   if (!file.open(QFile::ReadOnly | QFile::Text)) {
@@ -69,6 +69,10 @@ bool eventLoop::loadSetup(){
   element=root.firstChildElement();
   while (!element.isNull()) {
     tempHw=loadHardware::factory(element); if (tempHw!=nullptr) m_progLoad=tempHw;
+    if (element.tagName().toLower()=="chemistry"){
+      chem.append(batteryChemistry(element));
+//      packs.append(tmpPack);
+    }
 
     if (element.tagName().toLower()=="pack"){
       tmpPack.clear();
@@ -91,25 +95,28 @@ bool eventLoop::openPort(){
 
 bool eventLoop::applySettings(QString packID){
   int i;
-  
+  currentPack=nullptr;
+
   for (i=0;i<packs.count();i++){
     if (packs[i].isPack(packID)){
-      currentPack=i;
-      
-      packs[i].printDetails(stdout);
-      printf("\n");
-      printf("Setting discharge current to %lf A\n", packs[i].current/1000.);
-      m_progLoad->setCurrent(packs[i].current/1000.);
-      
-      endVoltage=packs[i].endVoltage*packs[i].cells;
-      printf("Setting discharge end voltage to %lf V (%lf V/Cell)\n", endVoltage, packs[i].endVoltage);
-    
-      startTime=QDateTime::currentDateTime();
-      fileNameStem=QString("logs/")+packs[i].id+QString("-")+startTime.toString("ddMMyyyy-hhmmss");
-      return true;
+      currentPack=&(packs[i]);
     }
   }
-  return false;
+
+  if (currentPack==nullptr) return false;
+
+  currentPack->printDetails(stdout);
+  printf("\n");
+  printf("Setting discharge current to %lf A\n", packs[i].current/1000.);
+  m_progLoad->setCurrent(currentPack->current/1000.);
+      
+  endVoltage=currentPack->endVoltage()*packs[i].cells;
+  printf("Setting discharge end voltage to %lf V (%lf V/Cell)\n", endVoltage, currentPack->endVoltage());
+
+  startTime=QDateTime::currentDateTime();
+  fileNameStem=QString("logs/")+currentPack->id+QString("-")+startTime.toString("ddMMyyyy-hhmmss");
+
+  return true;
 }
 
 void eventLoop::listPackIDs(){
@@ -214,12 +221,12 @@ void eventLoop::runGnuplot(){
   arguments.clear();
   arguments.append("-c"); // Enable arguments
   arguments.append("batteryLog.gplt");
-  arguments.append(packs[currentPack].id);
-  arguments.append(packs[currentPack].chemistry());
-  sprintf(arg, "%i", packs[currentPack].cells);             arguments.append(arg);
-  sprintf(arg, "%lf", packs[currentPack].endVoltage);       arguments.append(arg);
-  sprintf(arg, "%lf", packs[currentPack].nominalVoltage);   arguments.append(arg);
-  sprintf(arg, "%lf", packs[currentPack].capacity);         arguments.append(arg);
+  arguments.append(currentPack->id);
+  arguments.append(currentPack->chemistry().name());
+  sprintf(arg, "%i",  currentPack->cells);                        arguments.append(arg);
+  sprintf(arg, "%lf", currentPack->endVoltage());                 arguments.append(arg);
+  sprintf(arg, "%lf", currentPack->chemistry().nominalVoltage()); arguments.append(arg);
+  sprintf(arg, "%lf", currentPack->capacity);                     arguments.append(arg);
   arguments.append(fileNameStem);
   
   gplt.setStandardOutputFile("/dev/null");
@@ -230,9 +237,9 @@ void eventLoop::runGnuplot(){
 void eventLoop::produceQALabel(){
   int i, foundPrinter=-1, foundSize=-1, w, h;
   int y, gap;
-  float ratedEnergy, relEnergy, predictedTime;
+  float relEnergy, predictedTime;
   char text[256], fail[10];
-  
+  QRect pageRect;
   QPainter painter;
   
   if (QALabelPrinter.isEmpty()) return;
@@ -285,13 +292,13 @@ void eventLoop::produceQALabel(){
     return;
   }
   
+  pageRect=printer.pageLayout().paintRectPixels(printer.resolution());
   printf("Resolution = %i\n", printer.resolution());
-  printf("Page Size (w,h) = %i , %i\n", printer.pageRect().width(), printer.pageRect().height());
+  printf("Page Size (w,h) = %i , %i\n", pageRect.width(), pageRect.height());
   
-  ratedEnergy=packs[currentPack].cells*(packs[currentPack].nominalVoltage*packs[currentPack].capacity/1000.*3600.)/1000.;
-  relEnergy=energy/ratedEnergy/10.;
+  relEnergy=energy/currentPack->ratedEnergy()/10.;
   
-  predictedTime=packs[currentPack].capacity/packs[currentPack].current;
+  predictedTime=currentPack->capacity/currentPack->current;
   
   printf("Relative Energy = %.2lf %%\n", relEnergy);
   if (relEnergy<85){
@@ -301,16 +308,16 @@ void eventLoop::produceQALabel(){
   }
   
   y=50; gap=165;
-  sprintf(text, "Pack: %s", packs[currentPack].id.toLatin1().data() );                   painter.drawText(0, y, text); y+=gap;
+  sprintf(text, "Pack: %s", currentPack->id.toLatin1().data() );                         painter.drawText(0, y, text); y+=gap;
   sprintf(text, "Date: %s\t%s", startTime.toString("dd/MM/yy").toLatin1().data(), fail); painter.drawText(0, y, text); y+=gap;
   sprintf(text, "Cond: %0.1lfA %0.1lfV/cell\t%.0f%%",
-                packs[currentPack].current/1000.,
-                packs[currentPack].endVoltage,
+                currentPack->current/1000.,
+                currentPack->endVoltage(),
                 relEnergy );                                                             painter.drawText(0, y, text); y+=gap;
   sprintf(text, "Type: %s %i cells %.0lf mAh",
-                packs[currentPack].chemistry().toLatin1().data(),
-                packs[currentPack].cells,
-                packs[currentPack].capacity );                                           painter.drawText(0, y, text); y+=gap;
+                currentPack->chemistry().name().toLatin1().data(),
+                currentPack->cells,
+                currentPack->capacity );                                                 painter.drawText(0, y, text); y+=gap;
   
   
   painter.end();

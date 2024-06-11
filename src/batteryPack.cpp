@@ -4,54 +4,52 @@
 #include <QtXml>
 #include "batteryPack.h"
 
-batteryPack::batteryPack(){
+batteryPack::batteryPack(QList<batteryChemistry> *chem){
   clear();
+  m_chem=chem;
 }
 
 void batteryPack::clear(){
   // Default settings for Ni-Cad...
   id="Unknown";
   capacity=1500;
-  batt_chem=1;
   cells=1;
-  endVoltage=1.0;
   current=50;
+  activeChem=-1;
+
+  m_customEndVoltage=false;
+  m_endVolts=1.0;
 }
 
 void batteryPack::readXml(QDomElement xml){
+  int i;
   QDomElement element;
   
   element=xml.firstChildElement();
   while (!element.isNull()) {
     if (element.tagName().toLower()=="id") id=element.text();
-    if (element.tagName().toLower()=="capacity") capacity=element.text().toDouble();
+    if (element.tagName().toLower()=="capacity")  capacity=element.text().toDouble();
     if (element.tagName().toLower()=="chemistry"){
-      if (element.text().toLower()=="ni-cad"){
-        batt_chem=1; nominalVoltage=1.2;
-      }
-      if (element.text().toLower()=="nimh"){
-        batt_chem=2; nominalVoltage=1.2;
-      }
-      if (element.text().toLower()=="lipo"){
-        batt_chem=3; nominalVoltage=3.7;
-      }
-      if (element.text().toLower()=="pb"){
-        batt_chem=4; nominalVoltage=2;
+      for (i=0;i<m_chem->count();i++){
+        if (m_chem->value(i).ref().toLower()==element.text().toLower()) activeChem=i;
       }
     }
     if (element.tagName().toLower()=="cells") cells=element.text().toInt();
-    if (element.tagName().toLower()=="endvoltage") endVoltage=element.text().toDouble();
+    if (element.tagName().toLower()=="endvoltage"){
+      m_customEndVoltage=true;
+      m_endVolts=element.text().toDouble();
+    }
     if (element.tagName().toLower()=="current") current=element.text().toDouble();
     element = element.nextSiblingElement();
   }
+
+  if (activeChem==-1){
+    printf("No chemistry defined for pack %s", id.toLatin1().data());
+  }
 }
-    
-QString batteryPack::chemistry(){
-  if (batt_chem==1) return QString("Ni-Cad");
-  if (batt_chem==2) return QString("NiMH");
-  if (batt_chem==3) return QString("LiPo");
-  if (batt_chem==4) return QString("Lead-Acid");
-  return QString("Unknown");
+
+batteryChemistry batteryPack::chemistry(){
+  return m_chem->value(activeChem);
 }
 
 bool batteryPack::isPack(QString packId){
@@ -60,9 +58,8 @@ bool batteryPack::isPack(QString packId){
 
 void batteryPack::printDetails(FILE *stream){
   int pThrs, pTmin;
-  float ratedEnergy, predictedTime;
+  float predictedTime;
   
-  ratedEnergy=cells*(nominalVoltage*capacity/1000.*3600.)/1000.;
   predictedTime=capacity/current * 60.;
   
   pThrs=(int)(predictedTime / 60.);
@@ -70,9 +67,18 @@ void batteryPack::printDetails(FILE *stream){
   
   fprintf(stream, "Pack Details:\n");
   fprintf(stream, "           Cells: %i\n", cells);
-  fprintf(stream, "     Nom Voltage: %0.2f V\n", nominalVoltage);
+  fprintf(stream, "     Nom Voltage: %0.2f V\n", chemistry().nominalVoltage());
   fprintf(stream, "        Capacity: %0.0f mAh\n", capacity);
-  fprintf(stream, "    Rated Energy: %0.3f kJ\n", ratedEnergy);
+  fprintf(stream, "    Rated Energy: %0.3f kJ\n", ratedEnergy());
   fprintf(stream, "  Discharge Time: %i hrs %i mins\n", pThrs, pTmin );
   
+}
+
+double batteryPack::endVoltage(){
+  if (!m_customEndVoltage) return chemistry().endVoltage();
+  return m_endVolts;
+}
+
+double batteryPack::ratedEnergy(){
+  return cells*(chemistry().nominalVoltage()*capacity/1000.*3600.)/1000.;
 }

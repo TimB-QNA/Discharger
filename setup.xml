@@ -1,14 +1,366 @@
 <batteries>
-  <hardware type="tenma7213210">
-    <port>/dev/serial/by-id/pci-0416_SZ_KORAD_USB_Mode_COM201708150-if00</port>
+  <Xhardware type="tenma7213210">
+    <port>/dev/serial/by-id/usb-0416_SZ_KORAD_USB_Mode_COM201708150-if00</port>
+  </Xhardware>
+  
+  <hardware type="pidischarger">
+    <adcbits>16</adcbits>
+    <channel id="1">
+      <adcChan>1</adcChan>
+      <dioChan>1</dioChan>
+      <resistance>147.8</resistance>
+      <slope>1.000</slope>
+      <offset>0.000</offset>
+    </channel>
+    <channel id="2">
+      <adcChan>2</adcChan>
+      <dioChan>2</dioChan>
+      <resistance>99.0</resistance>
+      <slope>1.000</slope>
+      <offset>0.000</offset>
+    </channel>
+    <channel id="3">
+      <adcChan>3</adcChan>
+      <dioChan>3</dioChan>
+      <resistance>59.6</resistance>
+      <slope>1.000</slope>
+      <offset>0.000</offset>
+    </channel>
+    <channel id="4">
+      <adcChan>4</adcChan>
+      <dioChan>4</dioChan>
+      <resistance>23.4</resistance>
+      <slope>1.000</slope>
+      <offset>0.000</offset>
+    </channel>
+
+    <channel id="5">
+      <adcChan>5</adcChan>
+      <dioChan>5</dioChan>
+      <resistance>63.68</resistance>
+      <slope>2.967845</slope>
+      <offset>0.000</offset>
+    </channel>
+    <channel id="6">
+      <adcChan>6</adcChan>
+      <dioChan>6</dioChan>
+      <resistance>47.67</resistance>
+      <slope>2.966065</slope>
+      <offset>0.000</offset>
+    </channel>    
+    <channel id="7">
+      <adcChan>7</adcChan>
+      <dioChan>7</dioChan>
+      <resistance>31.42</resistance>
+      <slope>2.963094</slope>
+      <offset>0.000</offset>
+    </channel>
+    <channel id="8">
+      <adcChan>8</adcChan>
+      <dioChan>8</dioChan>
+      <resistance>24.11</resistance>
+      <slope>2.954642</slope>
+      <offset>0.000</offset>
+    </channel>
+    
   </hardware>
+  
+  <chemistry>
+    <id>1</id>
+    <ref>NiMH</ref>
+    <name>Ni-Cad</name>
+    <minVoltage>0.8</minVoltage>
+    <maxVoltage>1.4</maxVoltage>
+    <nomVoltage>1.2</nomVoltage>
+    <endVoltage>1.0</endVoltage>
+    <maxChargeRate>1</maxChargeRate>
+    <maxDischargeRate>4</maxDischargeRate>
+  </chemistry>
+  <chemistry>
+    <id>2</id>
+    <ref>NiMH</ref>
+    <name>NiMH</name>
+    <minVoltage>0.8</minVoltage>
+    <maxVoltage>1.4</maxVoltage>
+    <nomVoltage>1.2</nomVoltage>
+    <endVoltage>1.0</endVoltage>
+    <maxChargeRate>1</maxChargeRate>
+    <maxDischargeRate>4</maxDischargeRate>
+  </chemistry>
+  <chemistry>
+    <id>3</id>
+    <ref>LiPo</ref>
+    <name>LiPo</name>
+    <minVoltage>2.75</minVoltage>
+    <maxVoltage>4.2</maxVoltage>
+    <nomVoltage>3.7</nomVoltage>
+    <endVoltage>3.3</endVoltage>
+    <maxChargeRate>1</maxChargeRate>
+    <maxDischargeRate>4</maxDischargeRate>
+  </chemistry>
+  <chemistry>
+    <id>4</id>
+    <ref>Pb</ref>
+    <name>Lead-acid</name>
+    <minVoltage>1.6</minVoltage>
+    <maxVoltage>2.5</maxVoltage>
+    <nomVoltage>1.2</nomVoltage>
+    <endVoltage>1.7</endVoltage>
+    <maxChargeRate>1</maxChargeRate>
+    <maxDischargeRate>4</maxDischargeRate>
+  </chemistry>
+  <chemistry>
+    <id>5</id>
+    <ref>Li-ion</ref>
+    <name>Li-Ion</name>
+    <minVoltage>2.75</minVoltage>
+    <maxVoltage>4.2</maxVoltage>
+    <nomVoltage>3.7</nomVoltage>
+    <endVoltage>3.3</endVoltage>
+    <maxChargeRate>1</maxChargeRate>
+    <maxDischargeRate>4</maxDischargeRate>
+  </chemistry>
+  <chemistry>
+    <id>6</id>
+    <ref>LFP4</ref>
+    <name>LiFePo4</name>
+    <minVoltage>2.0</minVoltage>
+    <maxVoltage>3.65</maxVoltage>
+    <nomVoltage>3.2</nomVoltage>
+    <endVoltage>2.5</endVoltage>
+    <maxChargeRate>1</maxChargeRate>
+    <maxDischargeRate>4</maxDischargeRate>
+  </chemistry>
+
   <pack>
-    <id>Pk1</id>
-    <capacity>1500</capacity>
-    <chemistry>LiPo</chemistry>
-    <cells>3</cells>
-    <endVoltage>3.4</endVoltage>
-    <current>3000</current>
-    <new>01/06/16</new>
+    <id>RxFlipper24</id>
+    <capacity>600</capacity>
+    <chemistry>NiMH</chemistry>
+    <cells>4</cells>
+    <endVoltage>1.1</endVoltage>
+    <current>150</current>
+    <new>10/04/24</new>
   </pack>
+
+  <pack>
+    <id>RxSpareJP</id>
+    <capacity>2100</capacity>
+    <chemistry>NiMH</chemistry>
+    <cells>4</cells>
+    <endVoltage>1.1</endVoltage>
+    <current>150</current>
+    <new>01/03/10</new>
+  </pack>
+  
+  <pack>
+    <id>ExBTphone</id>
+    <capacity>600</capacity>
+    <chemistry>NiMH</chemistry>
+    <cells>4</cells>
+    <endVoltage>1.1</endVoltage>
+    <current>150</current>
+    <new>01/01/18</new>
+  </pack>
+  
+  <pack>
+    <id>No1</id>
+    <capacity>50</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.5</endVoltage>
+    <current>35</current>
+    <new>01/06/15</new>
+  </pack>
+
+  <pack>
+    <id>No2</id>
+    <capacity>65</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>01/08/16</new>
+  </pack>
+
+  <pack>
+    <id>No3</id>
+    <capacity>65</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>01/01/17</new>
+  </pack>
+
+  <pack>
+    <id>No4</id>
+    <capacity>65</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>01/01/17</new>
+  </pack>
+
+  <pack>
+    <id>No5</id>
+    <capacity>70</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>08/09/20</new>
+  </pack>
+
+  <pack>
+    <id>No6</id>
+    <capacity>70</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>08/09/20</new>
+  </pack>
+
+  <pack>
+    <id>No7</id>
+    <capacity>75</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.5</endVoltage>
+    <current>24.7</current>
+    <new>21/03/23</new>
+  </pack>
+
+  <pack>
+    <id>No8</id>
+    <capacity>75</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>21/03/23</new>
+  </pack>
+
+  <pack>
+    <id>No9</id>
+    <capacity>75</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>21/03/23</new>
+  </pack>
+
+  <pack>
+    <id>No10</id>
+    <capacity>75</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>35</current>
+    <new>21/03/23</new>
+  </pack>
+
+  <pack>
+    <id>No11</id>
+    <capacity>40</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>25</current>
+    <new>22/03/23</new>
+  </pack>
+
+  <pack>
+    <id>No12</id>
+    <capacity>40</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>25</current>
+    <new>22/03/23</new>
+  </pack>
+
+  <pack>
+    <id>No13</id>
+    <capacity>40</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>25</current>
+    <new>25/05/23</new>
+  </pack>
+
+  <pack>
+    <id>No14</id>
+    <capacity>40</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>25</current>
+    <new>25/05/23</new>
+  </pack>
+
+  <pack>
+    <id>No15</id>
+    <capacity>40</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>25</current>
+    <new>25/05/23</new>
+  </pack>
+
+  <pack>
+    <id>RDT01</id>
+    <capacity>220</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>25</current>
+    <new>01/06/15</new>
+  </pack>
+
+  <pack>
+    <id>RDT02</id>
+    <capacity>220</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>25</current>
+    <new>08/09/20</new>
+  </pack>
+
+  <pack>
+    <id>Flexi01</id>
+    <capacity>820</capacity>
+    <chemistry>LiPo</chemistry>
+    <cells>1</cells>
+    <endVoltage>3.55</endVoltage>
+    <current>62.0</current>
+    <new>22/03/23</new>
+  </pack>
+
+  <pack>
+    <id>Blade</id>
+    <capacity>1350</capacity>
+    <chemistry>NiMh</chemistry>
+    <cells>4</cells>
+    <endVoltage>1.1</endVoltage>
+    <current>500</current>
+    <new>01/01/01</new>
+  </pack>
+
+  <pack> 
+    <id>SLA1</id>
+    <capacity>7200</capacity>
+    <chemistry>Pb</chemistry>
+    <cells>1</cells>
+    <endVoltage>1.1</endVoltage>
+    <current>2500</current>
+    <new>01/01/01</new>
+  </pack>
+  
+
 </batteries>
