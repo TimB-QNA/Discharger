@@ -67,6 +67,7 @@ void batteryPack::printDetails(FILE *stream){
   
   fprintf(stream, "Pack Details:\n");
   fprintf(stream, "           Cells: %i\n", cells);
+  fprintf(stream, "       Chemistry: %s\n", chemistry().name().toLatin1().data());
   fprintf(stream, "     Nom Voltage: %0.2f V\n", chemistry().nominalVoltage());
   fprintf(stream, "        Capacity: %0.0f mAh\n", capacity);
   fprintf(stream, "    Rated Energy: %0.3f kJ\n", ratedEnergy());
