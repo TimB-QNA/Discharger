@@ -193,6 +193,33 @@ void eventLoop::operate(){
     runGnuplot();
     produceQALabel();
     closeHardware();
+
+    printf("\nDischarge Summary:\n");
+    int dcHrs=dischargeTimeSecs/3600;
+    int dcMins=(dischargeTimeSecs-dcHrs*3600)/60;
+    int dcSecs=(int)dischargeTimeSecs % 60;
+
+    double estDctSecs=currentPack->capacity/currentPack->current*3600;
+    int estHrs=estDctSecs/3600;
+    int estMins=(estDctSecs-estHrs*3600)/60;
+    int estSecs=(int)estDctSecs % 60;
+
+    double energyRated=currentPack->cells*(currentPack->chemistry().nominalVoltage()*currentPack->capacity/1000.*3600.);
+
+    printf("  Pack ID         : %s\n", currentPack->id.toLatin1().data());
+    printf("  Chemistry       : %s\n", currentPack->chemistry().name().toLatin1().data());
+    printf("  Cells           : %i\n", currentPack->cells);
+    printf("  End Voltage     : %0.2lf V/cell\n", currentPack->endVoltage());
+    printf("  Nominal Voltage : %0.2lf V/cell\n", currentPack->chemistry().nominalVoltage());
+    printf("  Rated Capacity  : %0.0lf mAh\n", currentPack->capacity);
+    printf("  Rated Energy    : %0.1lf kJ\n", energyRated/1000. );
+    printf("  Discharge Rate  : %0.1lf A\n", currentPack->current/1000. );
+    printf("  Expected Time   : %02i:%02i:%02i\n\n", estHrs, estMins, estSecs);
+
+    printf("  Elapsed Time    : %02i:%02i:%02i\n", dcHrs, dcMins, dcSecs);
+    printf("  Total Energy    : %0.1lf kJ\n", energy/1000.);
+    printf("  Real Capacity   : %0.2lf %%\n",  energy/energyRated * 100.);
+
     exit(0);
   }
 }
